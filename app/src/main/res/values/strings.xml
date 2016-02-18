@@ -3,6 +3,12 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="cet4">CET4</string>
+    <string name="cet6">CET6</string>
+    <string name="description">description</string>
+    <string name="about">About me</string>
+    <string name="descriptioncontent">这是一个便捷的记单词软件，闪词，希望你能喜欢它。</string>
+    <string name="aboutcontent">我是付品友，上海海事大学计算机系大三学生，Email:pinyoufu@sina.com</string>
 
     <string name="action_settings">Settings</string>
 </resources>
