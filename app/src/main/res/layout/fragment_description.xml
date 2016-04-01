@@ -3,7 +3,11 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 <TextView
+    android:paddingTop="50dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="@string/descriptioncontent"/>
+    android:text="这是一款帮助您记忆英语单词的软件，您只需设置好时间间隔，然后让它运行于后台，然后它就会在后台自动的以toast的形式弹出单词，方便，简捷，高效。" />
+    <!--android:text="@string/descriptioncontent"/>-->
+
+
 </FrameLayout>

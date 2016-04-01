@@ -3,9 +3,13 @@
     package="com.fupinyou.shanci.shanciapp" >
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/lu"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
@@ -15,12 +19,25 @@
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Splash"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".SettingTimeActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <service android:name=".MyService"/>
+        <service android:name=".MyService" />
+        <receiver android:name=".ScreenStatusReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_OFF" />
+                <action android:name="android.intent.action.SCREEN_ON" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

@@ -1,14 +1,13 @@
 package com.fupinyou.shanci.shanciapp;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,14 +21,19 @@ public class MyService extends Service {
     private MyBinder mBinder = new MyBinder();
     private MainActivity mainActivity = new MainActivity();
     private DataBaseManager dataBaseManager = mainActivity.mDataBaseManager;
-    public String string="hello 你好1";
+    public String string="";
     private int n=10;
     public static int index=1;
+    private ScreenStatusReceiver mReceiver;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
 
+        mReceiver = new ScreenStatusReceiver();
+        registerReceiver(mReceiver, filter);
         Log.d(TAG, "onCreate() executed");
     }
 
@@ -42,6 +46,10 @@ public class MyService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver);
+            mReceiver = null;
+        }
         Log.d(TAG, "onDestroy() executed");
     }
 
@@ -57,7 +65,6 @@ public class MyService extends Service {
     }
 
     public class MyBinder extends Binder {
-
         public void startToast() {
             new Thread(new Runnable() {
                 @Override
@@ -67,15 +74,22 @@ public class MyService extends Service {
                         int sign,remainder;
                         int m;
                         Log.d("TAG", "startToast() executed");
-                        for (int i = 0; i < 30; i++) {
-                            sign=i/5;      //每5个单词一组
-                            remainder=i%5+1;
-                            m=sign/3;      //每组循环3次
-                            index=remainder+m*5;  //计算索引，用以从稀疏数组中获取该索引对应的值
-                            str = dataBaseManager.sparseArray.get(index);
-                            string=str;
-                            Thread.sleep(n);
-                            handler.sendEmptyMessage(0);
+                        for (int i = 0; i < 30;i++ ) {
+                            if(!ScreenStatusReceiver.wasScreenOn) {
+                                Thread.sleep(10000);
+                                i--;
+                                continue;
+                            }
+                        sign = i / 5;      //每5个单词一组
+                        remainder = i % 5+1;
+                        m = sign / 3;      //每组循环3次
+                        index = remainder + m * 5;  //计算索引，用以从稀疏数组中获取该索引对应的值
+                        str = dataBaseManager.sparseArray.get(index);
+                        string = str;
+                        Thread.sleep(n);
+                        handler.sendEmptyMessage(0);
+
+
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -88,6 +102,7 @@ public class MyService extends Service {
             return index;
         }
     }
+
 
 
 

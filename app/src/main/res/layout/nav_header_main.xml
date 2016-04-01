@@ -9,15 +9,16 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark" android:orientation="vertical"
     android:gravity="bottom">
 
+    <!--android:paddingTop="@dimen/nav_header_vertical_spacing"-->
     <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@android:drawable/sym_def_app_icon" android:id="@+id/imageView" />
-
+        android:paddingTop="40dp"
+        android:src="@mipmap/iconfontshengdanlumin" android:id="@+id/imageView" />
+<!--    android:src="@android:drawable/sym_def_app_icon" android:id="@+id/imageView" />-->
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing" android:text="Android Studio"
+        android:paddingTop="@dimen/nav_header_vertical_spacing" android:text="pinyoufu@outlook.com"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="android.studio@android.com" android:id="@+id/textView" />
+    <!--<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="pinyoufu@outlook.com" android:id="@+id/textView" />-->
 
 </LinearLayout>

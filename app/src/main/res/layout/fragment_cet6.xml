@@ -7,12 +7,13 @@
         android:layout_height="match_parent">
     </android.support.v7.widget.RecyclerView>
 <TextView
+    android:paddingTop="50dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="@string/app_name"/>
+    android:text="这里是英语六级单词，待添加。它和英语四级的原理完全是一样的。"/>
 
     <android.support.design.widget.FloatingActionButton android:id="@+id/fab"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_gravity="bottom|end" android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" />
+        android:src="@android:drawable/ic_menu_delete" />
 </FrameLayout>
