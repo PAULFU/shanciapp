@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:paddingBottom="24dp"
-        android:textColor="#3F51B5"
         android:text="正在读取默认数据..."/>
 
     <ProgressBar

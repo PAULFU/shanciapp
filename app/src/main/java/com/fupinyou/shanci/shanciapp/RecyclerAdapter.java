@@ -15,10 +15,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int TYPE_ITEM = 1;
     private static final int TYPE_HEADER = 2;
     private List<String> mItemList;
+    private OnItemClickLitener mOnItemClickLitener;
 
     public RecyclerAdapter(List<String> itemList) {
         mItemList = itemList;
     }
+
+    public interface OnItemClickLitener {
+        void onItemClick(View view, int position);
+    }
+
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         if (viewType == TYPE_ITEM) {
@@ -30,13 +36,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         throw new RuntimeException("There is no type that matches the type " + viewType + " + make sure your using types correctly");}
 
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int position) {
         if (!isPositionHeader(position)) {
             RecyclerItemViewHolder holder = (RecyclerItemViewHolder) viewHolder;
             String itemText = mItemList.get(position - 1); // header
             holder.setItemText(itemText);
         }
-    }
+        // 如果设置了回调，则设置点击事件
+        if (mOnItemClickLitener != null) {
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = viewHolder.getLayoutPosition();
+                    mOnItemClickLitener.onItemClick(viewHolder.itemView, pos);
+                }
+            });
+        }
+        }
 
     public int getBasicItemCount() {
         return mItemList == null ? 0 : mItemList.size();
@@ -61,4 +77,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private boolean isPositionHeader(int position) {
         return position == 0;
     }
+
+
+
+    public void setOnItemClickLitener(OnItemClickLitener mOnItemClickLitener)
+    {
+        this.mOnItemClickLitener = mOnItemClickLitener;
+    }
+
 }

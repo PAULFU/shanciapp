@@ -47,4 +47,9 @@ public class Word {
         this.sentence = sentence;
     }
 
+    public String toString(){
+        StringBuilder sb=new StringBuilder();
+        sb.append(wordcontent+"XXX"+sentence+"XXX");
+        return sb.toString();
+    }
 }

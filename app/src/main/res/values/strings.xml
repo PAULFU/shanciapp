@@ -12,5 +12,8 @@
     <string name="action_settings">Settings</string>
     <string name="alerttitle">请选择文件</string>
     <string name="choose">确定</string>
+    <string name="inputbox">请输入想要查询的单词</string>
+    <string name="input_hint">我要查询...</string>
+    <string name="input_pref">例如：sample</string>
 
 </resources>

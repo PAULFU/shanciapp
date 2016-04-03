@@ -12,6 +12,8 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
+
 /**
  * Created by fupinyou on 2016/2/10.
  */
@@ -34,7 +36,7 @@ public class MyService extends Service {
 
         mReceiver = new ScreenStatusReceiver();
         registerReceiver(mReceiver, filter);
-        Log.d(TAG, "onCreate() executed");
+        Log.d(TAG,"onCreate() executed");
     }
 
     @Override
@@ -84,12 +86,19 @@ public class MyService extends Service {
                         remainder = i % 5+1;
                         m = sign / 3;      //每组循环3次
                         index = remainder + m * 5;  //计算索引，用以从稀疏数组中获取该索引对应的值
-                        str = dataBaseManager.sparseArray.get(index);
-                        string = str;
+                            if(!MainActivity.aBoolean) {
+                                str = dataBaseManager.sparseArray.get(index);
+                                string = str;
+                                Logger.v("mmmmmmmmmmmmmm", str);
+                            }
+                            else {
+                                str=MainActivity.sparseArray.get(index);
+                                string=str;
+                                //Log.v("sssssssssssss",str);
+                                System.out.print(str+"我我我我我我我我我我我我旺旺");
+                            }
                         Thread.sleep(n);
                         handler.sendEmptyMessage(0);
-
-
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -103,16 +112,13 @@ public class MyService extends Service {
         }
     }
 
-
-
-
     private Handler handler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             //Looper.prepare();
             Toast.makeText(getApplicationContext(), string, Toast.LENGTH_LONG).show();
-            Log.i(TAG1,string);
+            //Log.i(TAG1,string);
             //Looper.loop();
         }
     };

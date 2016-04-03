@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/shanciappnavigationViewError.iml" filepath="$PROJECT_DIR$/shanciappnavigationViewError.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/greendaolib/greendaolib.iml" filepath="$PROJECT_DIR$/greendaolib/greendaolib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shanciapp.iml" filepath="$PROJECT_DIR$/shanciapp.iml" />
     </modules>
   </component>
 </project>
