@@ -54,7 +54,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.android.volley.Request.Method.GET;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -69,6 +68,7 @@ public class MainActivity extends AppCompatActivity
     public static boolean aBoolean=false;
     private Fragment[] fragments;
     private RecyclerView mRecyclerView;
+    private WordDao wordDao;
     private Toolbar mToolbar;
     private FloatingActionButton mFabButton;
     //private  FloatingActionButton actionButton;
@@ -119,8 +119,8 @@ public class MainActivity extends AppCompatActivity
         final TextView textView= (TextView) findViewById(R.id.text);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mProgressBar= (ProgressBar) findViewById(R.id.google_progress);
-        mProgressBar.setIndeterminateDrawable(new ChromeFloatingCirclesDrawable.Builder(this)
-                .build());
+      /*  mProgressBar.setIndeterminateDrawable(new ChromeFloatingCirclesDrawable.Builder(this)
+                .build());*/
         mToolbar = toolbar;
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(onMenuItemClick);
@@ -130,21 +130,24 @@ public class MainActivity extends AppCompatActivity
             public void handleMessage(Message msg) {//此方法在ui线程运行
                 switch (msg.what) {
                     case MSG_SUCCESS:
+                        mProgressBar.setIndeterminateDrawable(new ChromeFloatingCirclesDrawable.Builder(MainActivity.this)
+                                .build());
                         initRecyclerView(createItemList());
                         textView.setText("");
-                        mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                        mProgressBar.setVisibility(ProgressBar.GONE);
                         Log.i("MainActivity", "SUCCESS");
                         break;
                     case MSG_FAILURE:
                         Log.i("MainActivity", "FAILURE");
                         break;
                     case DAO_MESSAGE:
-                        textView.setText("正在加载所选数据...");
-                        mProgressBar.setVisibility(View.VISIBLE);
+                        //textView.setText("正在加载所选数据...");
+                        mProgressBar.setIndeterminateDrawable(new ChromeFloatingCirclesDrawable.Builder(MainActivity.this)
+                                .build());
                         initRecyclerView(createItemListDAO());
-                        mRecyclerView.setVisibility(View.VISIBLE);
+                        //mRecyclerView.setVisibility(View.VISIBLE);
                         textView.setText("");
-                        mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                        mProgressBar.setVisibility(ProgressBar.GONE);
                         break;
                 }
             }
@@ -168,7 +171,6 @@ public class MainActivity extends AppCompatActivity
                //mDataBaseManager.closeDataBase();
             }
         };
-
         mThread=new Thread(runnable);
         mThread.start();
 
@@ -177,7 +179,7 @@ public class MainActivity extends AppCompatActivity
         SQLiteDatabase db=helper.getWritableDatabase();
         DaoMaster daoMaster=new DaoMaster(db);
         DaoSession daoSession=daoMaster.newSession();
-        WordDao wordDao=daoSession.getWordDao();
+        final WordDao wordDao=daoSession.getWordDao();
         GenDAODataBase.genDAODataBase(wordDao);
 
         //initRecyclerView();
@@ -195,25 +197,6 @@ public class MainActivity extends AppCompatActivity
                 myBinder.startToast();
             }
         };
-
-
-
-     /*   FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        mFabButton = fab;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int deleteId=myBinder.getIndex();
-                int endId=DataBaseManager.sparseArray.size();
-                String string=DataBaseManager.sparseArray.get(deleteId);
-                String endString=DataBaseManager.sparseArray.get(endId);
-                mDataBaseManager.delete(deleteId);
-                DataBaseManager.sparseArray.setValueAt(deleteId-1, endString);
-                DataBaseManager.sparseArray.delete(endId);
-                Snackbar.make(view, "单词'"+string+"'已经删除", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
 
         ImageView icon=new ImageView(this);
         icon.setImageResource(R.mipmap.plus);
@@ -233,7 +216,8 @@ public class MainActivity extends AppCompatActivity
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mProgressBar.setIndeterminateDrawable(new ChromeFloatingCirclesDrawable.Builder(MainActivity.this)
+                        .build());
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -249,6 +233,7 @@ public class MainActivity extends AppCompatActivity
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                mProgressBar.setVisibility(View.GONE);
                 final String[] items = SSFTPsync.strings;
 
                 new MaterialDialog.Builder(MainActivity.this)
@@ -306,18 +291,35 @@ public class MainActivity extends AppCompatActivity
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mBundle != null) {
-                    int deleteId = myBinder.getIndex();
-                    int endId = DataBaseManager.sparseArray.size();
-                    String string = DataBaseManager.sparseArray.get(deleteId);
-                    String endString = DataBaseManager.sparseArray.get(endId);
-                    mDataBaseManager.delete(deleteId);
-                    DataBaseManager.sparseArray.setValueAt(deleteId - 1, endString);
-                    DataBaseManager.sparseArray.delete(endId);
-                    Snackbar.make(v, "单词'" + string + "'已经删除", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                } else {
-                    Toast.makeText(MainActivity.this, "请先设置好时间间隔后再试", Toast.LENGTH_SHORT).show();
+                if (!aBoolean) {
+                    if (mBundle != null) {
+                        int deleteId = myBinder.getIndex();
+                        int endId = DataBaseManager.sparseArray.size();
+                        String string = DataBaseManager.sparseArray.get(deleteId);
+                        String endString = DataBaseManager.sparseArray.get(endId);
+                        mDataBaseManager.delete(deleteId);
+                        DataBaseManager.sparseArray.setValueAt(deleteId - 1, endString);
+                        DataBaseManager.sparseArray.delete(endId);
+                        Snackbar.make(v, "单词'" + string + "'已经删除", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "请先设置好时间间隔后再试", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    if (mBundle != null) {
+                        int deleteId = myBinder.getIndex();
+                        int endId =sparseArray.size();
+                        String string = sparseArray.get(deleteId);
+                        String endString = sparseArray.get(endId);
+                        wordDao.queryBuilder().where(WordDao.Properties.Id.eq(deleteId)).buildDelete().executeDeleteWithoutDetachingEntities();
+                        sparseArray.setValueAt(deleteId - 1, endString);
+                        sparseArray.delete(endId);
+                        Snackbar.make(v, "单词'" + string + "'已经删除", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "请先设置好时间间隔后再试", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -489,7 +491,7 @@ public class MainActivity extends AppCompatActivity
                 x=x/1000;
                 String str= String.valueOf(x);
                 Toast.makeText(MainActivity.this,"您选择的时间间隔是"+str+"秒", Toast.LENGTH_SHORT).show();
-                Toast.makeText(MainActivity.this,"sincere 真诚的",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this,"sincere 真诚的",Toast.LENGTH_SHORT).show();
             }
         }
         if(requestCode==FILE_SELECT_CODE){
@@ -504,7 +506,7 @@ public class MainActivity extends AppCompatActivity
                SQLiteDatabase sqldb= dbm.openDatabase(file);
                 DaoMaster daoM=new DaoMaster(sqldb);
                 DaoSession daoS=daoM.newSession();
-                WordDao wordDao=daoS.getWordDao();
+                wordDao=daoS.getWordDao();
                 //GenDAODataBase.genDAODataBase(wordDao);
                 List list=wordDao.queryBuilder().list();
                 extralist=list;
