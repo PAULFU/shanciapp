@@ -5,26 +5,25 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
@@ -33,7 +32,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -44,10 +43,7 @@ import com.jpardogo.android.googleprogressbar.library.ChromeFloatingCirclesDrawa
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.orhanobut.logger.Logger;
-
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -119,10 +115,10 @@ public class MainActivity extends AppCompatActivity
         final TextView textView= (TextView) findViewById(R.id.text);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mProgressBar= (ProgressBar) findViewById(R.id.google_progress);
-      /*  mProgressBar.setIndeterminateDrawable(new ChromeFloatingCirclesDrawable.Builder(this)
-                .build());*/
+
         mToolbar = toolbar;
         setSupportActionBar(toolbar);
+        initWindow();
         toolbar.setOnMenuItemClickListener(onMenuItemClick);
 
 
@@ -141,25 +137,15 @@ public class MainActivity extends AppCompatActivity
                         Log.i("MainActivity", "FAILURE");
                         break;
                     case DAO_MESSAGE:
-                        //textView.setText("正在加载所选数据...");
                         mProgressBar.setIndeterminateDrawable(new ChromeFloatingCirclesDrawable.Builder(MainActivity.this)
                                 .build());
                         initRecyclerView(createItemListDAO());
-                        //mRecyclerView.setVisibility(View.VISIBLE);
                         textView.setText("");
                         mProgressBar.setVisibility(ProgressBar.GONE);
                         break;
                 }
             }
         };
-
-        fragments = new Fragment[4];
-        fragments[0] = getSupportFragmentManager().findFragmentById(R.id.fragment_cet4);
-        fragments[1] = getSupportFragmentManager().findFragmentById(R.id.fragment_cet6);
-        fragments[2] = getSupportFragmentManager().findFragmentById(R.id.fragment_description);
-        fragments[3] = getSupportFragmentManager().findFragmentById(R.id.fragment_about);
-        getSupportFragmentManager().beginTransaction().hide(fragments[1]).hide(fragments[2])
-                .hide(fragments[3]).show(fragments[0]).commit();
 
         Runnable runnable=new Runnable() {
             @Override
@@ -174,7 +160,6 @@ public class MainActivity extends AppCompatActivity
         mThread=new Thread(runnable);
         mThread.start();
 
-
         DaoMaster.DevOpenHelper helper=new DaoMaster.DevOpenHelper(this,"onlineieltstable.db",null);
         SQLiteDatabase db=helper.getWritableDatabase();
         DaoMaster daoMaster=new DaoMaster(db);
@@ -182,15 +167,12 @@ public class MainActivity extends AppCompatActivity
         final WordDao wordDao=daoSession.getWordDao();
         GenDAODataBase.genDAODataBase(wordDao);
 
-        //initRecyclerView();
         Intent bindIntent = new Intent(this, MyService.class);
         intent=bindIntent;
         connection = new ServiceConnection() {
-
             @Override
             public void onServiceDisconnected(ComponentName name) {
             }
-
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 myBinder = (MyService.MyBinder) service;
@@ -204,11 +186,7 @@ public class MainActivity extends AppCompatActivity
                 .setContentView(icon)
                 .setPosition(FloatingActionButton.POSITION_BOTTOM_RIGHT)
                 .build();
-
-
-
         SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
-// repeat many times:
         ImageView itemIcon1 = new ImageView(this);
         itemIcon1.setImageResource(R.mipmap.download);
         SubActionButton button1 = itemBuilder.setContentView(itemIcon1).build();
@@ -349,11 +327,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG);
-//                        .setAction("Action", null).show();
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("*/*");
-//                intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
-//                intent.addCategory(Intent.CATEGORY_OPENABLE);
                 try {
                     startActivityForResult(Intent.createChooser(intent, "请选择文件"), FILE_SELECT_CODE);
                 } catch (android.content.ActivityNotFoundException ex) {
@@ -372,7 +347,6 @@ public class MainActivity extends AppCompatActivity
                         .title(R.string.inputbox)
                         .input(R.string.input_hint,0,new MaterialDialog.InputCallback(){
                             public void onInput(MaterialDialog dialog, CharSequence input) {
-                                // Do something
                                 searchstr=input.toString();
                                 getSearchData();
                             }
@@ -388,18 +362,14 @@ public class MainActivity extends AppCompatActivity
                 .addSubActionView(button5)
                 .attachTo(mFabButton)
                 .build();
-
-
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
         getEverydayJOSNData();
-       /* NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);*/
-       /* navigationView.setNavigationItemSelectedListener(this);*/
+    }
+
+    private void initWindow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
     }
 
     private void getEverydayJOSNData(){
@@ -423,6 +393,7 @@ public class MainActivity extends AppCompatActivity
         int v = (int)a;
         return (v >=19968 && v <= 171941);
     }
+
     public static boolean containsChinese(String s){
         if (null == s || "".equals(s.trim())) return false;
         for (int i = 0; i < s.length(); i++) {
@@ -430,6 +401,7 @@ public class MainActivity extends AppCompatActivity
         }
         return false;
     }
+
     private void getSearchData(){
         String url="http://fanyi.youdao.com/openapi.do?keyfrom=fupinyou&key=1443574777&type=data&doctype=json&version=1.1&q="+searchstr;
         StringRequest request=new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -481,17 +453,13 @@ public class MainActivity extends AppCompatActivity
                 mark=1;
                 Bundle bundle = data.getExtras();
                 mBundle=bundle;
-                //int i = bundle.getInt("gap");
                 String string = bundle.getString("gap");
-                //gap = Integer.parseInt(string);
-                //Log.v(TAG,string);
                 intent.putExtra("gap", string);
                 bindService(intent, connection, BIND_AUTO_CREATE);
                 int x=Integer.parseInt(string);
                 x=x/1000;
                 String str= String.valueOf(x);
                 Toast.makeText(MainActivity.this,"您选择的时间间隔是"+str+"秒", Toast.LENGTH_SHORT).show();
-                //Toast.makeText(MainActivity.this,"sincere 真诚的",Toast.LENGTH_SHORT).show();
             }
         }
         if(requestCode==FILE_SELECT_CODE){
@@ -507,34 +475,17 @@ public class MainActivity extends AppCompatActivity
                 DaoMaster daoM=new DaoMaster(sqldb);
                 DaoSession daoS=daoM.newSession();
                 wordDao=daoS.getWordDao();
-                //GenDAODataBase.genDAODataBase(wordDao);
                 List list=wordDao.queryBuilder().list();
                 extralist=list;
                 stopRecyclerViews();
                Runnable daorunable=new Runnable() {
                    @Override
                    public void run() {
-//                       mProgressBar.setVisibility(View.VISIBLE);
                        mHandler.obtainMessage(DAO_MESSAGE).sendToTarget();
                    }
                };
                 mThread=new Thread(daorunable);
                 mThread.start();
-               /* try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                bindService(intent, connection, BIND_AUTO_CREATE);*/
-
-                //String daostr=daoquery(list);
-
-               /*for (int i=0;i<list.size();i++){
-                   //Log.e("DAODAODAO",list.get(i).toString());
-                   Word w=(Word)list.get(i);
-                   String str=w.toString();
-                   Log.e("DAODAODAO",str);
-               }*/
             }
         }
     }
@@ -559,11 +510,9 @@ public class MainActivity extends AppCompatActivity
     private String daoquery(List list){
         StringBuilder sb=new StringBuilder();
         for (int i=0;i<list.size();i++){
-            //Log.e("DAODAODAO",list.get(i).toString());
             Word w=(Word)list.get(i);
             String str=w.toString();
             sb.append(str);
-            //Log.i("DAODAODAO",str);
         }
         //sb=sb.append(list.size());
         return sb.toString();
@@ -571,6 +520,7 @@ public class MainActivity extends AppCompatActivity
 
     protected void initRecyclerView(final List<String> liststring) {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView1);
+        assert recyclerView != null;
         recyclerView.setVisibility(View.VISIBLE);
         mRecyclerView=recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -584,7 +534,6 @@ public class MainActivity extends AppCompatActivity
                         .setCircularRevealAnimator(CanDialog.CircularRevealStatus.TOP_LEFT)
                         .setPositiveButton("确定",true,null)
                         .show();
-                //Toast.makeText(MainActivity.this,liststring.get(position-1),Toast.LENGTH_SHORT).show();
             }
         });
         recyclerView.setAdapter(recyclerAdapter);
@@ -593,7 +542,6 @@ public class MainActivity extends AppCompatActivity
             public void onHide() {
                 hideViews();
             }
-
             @Override
             public void onShow() {
                 showViews();
@@ -625,62 +573,46 @@ public class MainActivity extends AppCompatActivity
         for (int i=0;i<strings.length;i=i+2) {
             itemList.add(strings[i]);
         }
-
         for(int i=1;i<strings.length;i=i+2){
             popupItemList.add(strings[i]);
         }
-       /* for (int i=1;i<20;i++)
-        {
-            itemList.add("Item" + i);
-        }*/
         return itemList;
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        /*DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
-        }
+        }*/
+        super.onBackPressed();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_camera) {
             getSupportFragmentManager().beginTransaction().hide(fragments[1])
                     .hide(fragments[2]).hide(fragments[3]).show(fragments[0]).commit();
         } else if (id == R.id.nav_gallery) {
-           /* fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_cet4,cet6Fragment)
-                    .commit();*/
             getSupportFragmentManager().beginTransaction().hide(fragments[0])
                     .hide(fragments[2]).hide(fragments[3]).show(fragments[1]).commit();
         } else if (id == R.id.nav_slideshow) {
@@ -690,9 +622,6 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().hide(fragments[0])
                     .hide(fragments[1]).hide(fragments[2]).show(fragments[3]).commit();
         }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 

@@ -6,23 +6,6 @@ import java.util.List;
  * Created by fupinyou on 2016/4/3.
  */
 public class IcibaInfo {
-    /**
-     * sid : 1933
-     * tts : http://news.iciba.com/admin/tts/2016-04-03-day.mp3
-     * content : The more we do, the more we can do. The busier we are, the more leisure we have.
-     * note : 事越做越会做，人越忙越有空。
-     * love : 5190
-     * translation : 词霸小编：#来自一位不愿意透露ID的小伙伴~这句投稿来自一位不愿意透露ID的小伙伴。这句经典的话来自，英国批判家、散文家 威廉.哈兹里特。看到这句话让小编想起来鲁迅先生的一句话：“时间就像海绵里的水，挤挤总是有的。”脑子越用越灵活，越忙学的东西越多效率越来越高。希望大家都能有充实美好的一天又一天！
-     * picture : http://cdn.iciba.com/news/word/2016-04-03.jpg
-     * picture2 : http://cdn.iciba.com/news/word/big_2016-04-03b.jpg
-     * caption : 词霸每日一句
-     * dateline : 2016-04-03
-     * s_pv : 9098
-     * sp_pv : 364
-     * tags : [{"id":"10","name":"正能量"}]
-     * fenxiang_img : http://cdn.iciba.com/web/news/longweibo/imag/2016-04-03.jpg
-     */
-
     private String sid;
     private String tts;
     private String content;
@@ -36,10 +19,6 @@ public class IcibaInfo {
     private String s_pv;
     private String sp_pv;
     private String fenxiang_img;
-    /**
-     * id : 10
-     * name : 正能量
-     */
 
     private List<TagsBean> tags;
 

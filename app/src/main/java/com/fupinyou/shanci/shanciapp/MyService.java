@@ -1,7 +1,6 @@
 package com.fupinyou.shanci.shanciapp;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
@@ -60,7 +59,6 @@ public class MyService extends Service {
         Bundle bundle=intent.getExtras();
         String getString=bundle.getString("gap");
         n=Integer.parseInt(getString);
-        //Log.v(TAG,String.valueOf(n));
         Log.v(TAG,getString);
         Log.v(TAG,"onBind executed");
         return mBinder;
@@ -76,7 +74,7 @@ public class MyService extends Service {
                         int sign,remainder;
                         int m;
                         Log.d("TAG", "startToast() executed");
-                        for (int i = 0; i < 30;i++ ) {
+                        for (int i = 0; i < 300;i++ ) {
                             if(!ScreenStatusReceiver.wasScreenOn) {
                                 Thread.sleep(10000);
                                 i--;
@@ -89,16 +87,18 @@ public class MyService extends Service {
                             if(!MainActivity.aBoolean) {
                                 str = dataBaseManager.sparseArray.get(index);
                                 string = str;
-                                Logger.v("mmmmmmmmmmmmmm", str);
+                                Logger.v("m", str);
                             }
                             else {
                                 str=MainActivity.sparseArray.get(index);
                                 string=str;
-                                //Log.v("sssssssssssss",str);
-                                System.out.print(str+"我我我我我我我我我我我我旺旺");
+                                System.out.print(str+"m");
                             }
                         Thread.sleep(n);
                         handler.sendEmptyMessage(0);
+                            if (i==299){
+                                i=-1;
+                            }
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -116,10 +116,8 @@ public class MyService extends Service {
 
         @Override
         public void handleMessage(Message msg) {
-            //Looper.prepare();
-            Toast.makeText(getApplicationContext(), string, Toast.LENGTH_LONG).show();
-            //Log.i(TAG1,string);
-            //Looper.loop();
+            //Toast.makeText(getApplicationContext(), string, Toast.LENGTH_LONG).show();
+            ToastCompat.makeText(getApplicationContext(),string, Toast.LENGTH_LONG).show();
         }
     };
 }

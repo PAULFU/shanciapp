@@ -10,7 +10,6 @@ import com.jcraft.jsch.Session;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Vector;
@@ -110,18 +109,8 @@ public class SSFTPsync {
             channel = (Channel) session.openChannel("sftp");
             channel.connect(1000);
             ChannelSftp sftp = (ChannelSftp) channel;
-
-
             //进入服务器指定的文件夹
             sftp.cd(remoteDirectory);
-
-            //列出服务器指定的文件列表
-            //vector = sftp.ls("*.*");
-          /*  for(int i=0;i<v.size();i++){
-                System.out.println(v.get(i));
-            }*/
-
-            //以下代码实现从本地上传一个文件到服务器，如果要实现下载，对换以下流就可以了
             OutputStream outstream = sftp.put(Remotefilename);
             InputStream instream = new FileInputStream(new File(localFilePath));
 
@@ -175,23 +164,14 @@ public class SSFTPsync {
             channel = (Channel) session.openChannel("sftp");
             channel.connect(1000);
             ChannelSftp sftp = (ChannelSftp) channel;
-
-
             //进入服务器指定的文件夹
             sftp.cd(remoteDirectory);
-
-            //列出服务器指定的文件列表
-//            Vector v = sftp.ls("*.txt");
-//            for(int i=0;i<v.size();i++){
-//                System.out.println(v.get(i));
-//            }
             File fi=new File(localFilePath);
 
             vector = sftp.ls("*.*");
             //以下代码实现从本地上传一个文件到服务器，如果要实现下载，对换以下流就可以了
             InputStream instream = sftp.get(Remotefilename);
             OutputStream outstream= new FileOutputStream(fi);
-            //InputStream instream = new FileInputStream(new File(localFilePath));
 
             byte b[] = new byte[1024];
             int n;

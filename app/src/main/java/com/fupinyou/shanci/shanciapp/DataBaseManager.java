@@ -4,16 +4,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by yi on 2015/11/4.
@@ -22,7 +17,6 @@ public class DataBaseManager {
     private SQLiteDatabase db;
     private DataBaseOpenHelper dataBaseOpenHelper;
     private boolean isexist=false;
-    //public Map<Integer,String> map=new HashMap<Integer, String>();
     public static SparseArray<String> sparseArray=new SparseArray();
     List<PastWord> wordcollection=new ArrayList<>();
 
@@ -84,35 +78,24 @@ public class DataBaseManager {
         String wordcontent;
         String wordmeaning;
         StringBuilder stringBuilder=new StringBuilder();
-        //StringBuilder word2=new StringBuilder();
         Cursor c=db.rawQuery(
-                "SELECT word_id,word_content,word_meaning FROM cet_four_table", null);// WHERE word_content='hello'
-        //num=c.getColumnCount();
+                "SELECT word_id,word_content,word_meaning FROM cet_four_table", null);
         c.moveToFirst();
         while (!c.isAfterLast()) {
-            // wordid=String.valueOf(c.getInt(0));
             wordid=c.getInt(0);
             wordcontent= c.getString(1);
             wordmeaning=c.getString(2);
             stringBuilder.append(wordcontent+"XXX");
             stringBuilder.append(wordmeaning + "XXX");
             num++;
-            //map.put(wordid,wordcontent+wordmeaning);
             sparseArray.put(wordid,wordcontent);
-            // do something useful with these
             c.moveToNext();
         }
         c.close();
-        // return wordid+wordcontent+wordmeaning;
         return stringBuilder.toString();
     }
 
     public void delete(int id) {
-//        String mString;
-//        for (int aPastWordid : wordid) {
-//            mString = String.valueOf(aPastWordid);
-//            db.delete("cet_four_table", "word_id = ?", new String[]{mString});
-
         dataBaseOpenHelper.delete(id);
 
     }
